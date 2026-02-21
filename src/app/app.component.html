@@ -1,0 +1,13 @@
+<div class="container">
+  <h1>🎬 Movie App</h1>
+
+  <div *ngIf="movies.length === 0" class="loading">Loading movies...</div>
+
+  <div class="movies-grid">
+    <div class="movie-card" *ngFor="let movie of movies">
+      <h2>{{ movie.title }}</h2>
+      <p>📅 {{ movie.year }}</p>
+      <p class="rating">⭐ {{ movie.rating }}</p>
+    </div>
+  </div>
+</div>
