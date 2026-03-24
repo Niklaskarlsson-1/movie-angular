@@ -41,6 +41,6 @@ export class AppComponent implements OnInit {
   }
 
   getRandomRating(): number {
-    return Math.floor(Math.random() * 4) + 7; // 7–10
+    return Math.floor(Math.random() * 4) + 7;
   }
 }
