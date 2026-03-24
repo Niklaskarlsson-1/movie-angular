@@ -1,5 +1,5 @@
-const STATIC_CACHE = 'static-v3';
-const DYNAMIC_CACHE = 'dynamic-v3';
+const STATIC_CACHE = 'static-v4';
+const DYNAMIC_CACHE = 'dynamic-v4';
 
 const STATIC_FILES = [
   '/',
@@ -31,20 +31,31 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('/movies')) {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        return (
+          response ||
+          fetch(event.request).then((res) => {
+            return caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(event.request, res.clone());
+              return res;
+            });
+          })
+        );
+      }),
+    );
     return;
   }
 
   event.respondWith(
     caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
+      if (response) return response;
 
       return fetch(event.request)
-        .then((fetchRes) => {
+        .then((res) => {
           return caches.open(DYNAMIC_CACHE).then((cache) => {
-            cache.put(event.request, fetchRes.clone());
-            return fetchRes;
+            cache.put(event.request, res.clone());
+            return res;
           });
         })
         .catch(() => caches.match('/index.html'));
